@@ -7,15 +7,17 @@ import {
     HttpStatus,
     Param,
     ParseIntPipe,
-    Post, UseGuards,
+    Post, UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import {UserService} from './user.service';
 import {User} from './interface/user';
 import {UserDto} from "./dto/user.dto";
 import {AuthGuard} from "./guard/auth.guard";
+import {LoggingInterceptor} from "./interceptor/logging.interceptor";
 
-@Controller('users')
-@UseGuards(AuthGuard)
+@UseInterceptors(LoggingInterceptor) // Apply LoggingInterceptor to all routes in the controller for logging before and after each request
+@Controller('users') // Base path for all routes in the controller
+@UseGuards(AuthGuard) // Apply AuthGuard to all routes in the controller for authentication
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
