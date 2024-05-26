@@ -1,8 +1,7 @@
-import {Body, Controller, Delete, Get, Header, HttpStatus, Param, ParseIntPipe, Post, Redirect, Req, Res} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post} from '@nestjs/common';
 import {UserService} from './user.service';
 import {User} from './interface/user';
-import {UserDto} from "./dto/user.dto";
-import {Request, Response} from 'express';
+import {UserDto} from "./dto/user.dto"; 
 
 @Controller('users')
 export class UserController {
@@ -10,38 +9,41 @@ export class UserController {
 
     // HTTP GET request to /users
     @Get()
-    getUsers(): User[] {
-        return this.userService.getUsers();
+    async getUsers(): Promise<User[]> {
+        try {
+            return this.userService.getUsers();
+        }catch (e) {
+            throw new BadRequestException(e.message)
+        } 
     }
 
     // HTTP GET request to /users/:id
-    @Get(':id')
-    // @Redirect('') // Redirect to the root URL
-    // @Header('Cache-Control', 'none') // Set the Cache-Control header to none
-    getUser(
-        @Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number,
-        @Req() request: Request, // Inject the Request object,
-        @Res() response: Response // Inject the Response object
-    ){
-        const data = this.userService.getUser(id);
-        response.status(HttpStatus.OK).json(data);
-    }
-
-    // HTTP POST request to /users
-    // @Post() 
-    // postUser(@Body() user: UserDto): User {
-    //     return this.userService.addUser(user);
-    // }
+    @Get(':id') 
+    async getUser(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number): Promise<User>{
+        try {
+            return await this.userService.getUser(id);
+        }catch (e) {
+            throw new BadRequestException(e.message)
+        }
+    } 
     
     // HTTP POST request to /users
     @Post() 
     async postUser(@Body() user: UserDto): Promise<User> {
-        return this.userService.addUser(user);
+        try {
+            return await this.userService.addUser(user);
+        }catch (e) {
+            throw new BadRequestException(e.message)
+        }
     }
 
     // HTTP DELETE request to /users/:id
     @Delete(':id')
-    deleteUser(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number): User[] { 
-        return this.userService.deleteUser(id);
+    async deleteUser(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number): Promise<User[]> { 
+        try {
+            return this.userService.deleteUser(id);
+        }catch (e) {
+            throw new BadRequestException(e.message)
+        }
     }
 }

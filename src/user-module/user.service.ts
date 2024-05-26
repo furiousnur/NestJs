@@ -5,34 +5,33 @@ import { User } from './interface/user';
 export class UserService {
     private users: User[] = [];
 
-    getUsers(): User[] {
-        return this.users;
+    async getUsers(): Promise<User[]> {
+        const users = this.users;
+        if (!users) {
+            throw new NotFoundException('No users found');
+        }
+        return Promise.resolve(users);
     }
 
-    getUser(id: number): User {
+    async getUser(id: number): Promise<User> {
         const user = this.users.find(user => user.id === id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        return user;
+        return Promise.resolve(user);
     }
-
-    // addUser(user: User): User {
-    //     this.users.push(user);
-    //     return user;
-    // }
     
-    addUser(user: User): Promise<User> {
+    async addUser(user: User): Promise<User> {
         this.users.push(user);
         return Promise.resolve(user);
     }
 
-    deleteUser(id: number): User[] {
+    async deleteUser(id: number): Promise<User[]> {
         const index = this.users.findIndex(user => user.id === id);
         if (index === -1) {
             throw new NotFoundException('User not found');
         }
         this.users.splice(index, 1);
-        return this.users;
+        return Promise.resolve(this.users);
     }
 }
