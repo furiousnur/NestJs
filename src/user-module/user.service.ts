@@ -17,9 +17,14 @@ export class UserService {
         return user;
     }
 
-    addUser(user: User): User {
+    // addUser(user: User): User {
+    //     this.users.push(user);
+    //     return user;
+    // }
+    
+    addUser(user: User): Promise<User> {
         this.users.push(user);
-        return user;
+        return Promise.resolve(user);
     }
 
     deleteUser(id: number): User[] {
