@@ -1,9 +1,21 @@
-import {BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post} from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    Post, UseGuards,
+} from '@nestjs/common';
 import {UserService} from './user.service';
 import {User} from './interface/user';
-import {UserDto} from "./dto/user.dto"; 
+import {UserDto} from "./dto/user.dto";
+import {AuthGuard} from "./guard/auth.guard";
 
 @Controller('users')
+@UseGuards(AuthGuard)
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -18,7 +30,7 @@ export class UserController {
     }
 
     // HTTP GET request to /users/:id
-    @Get(':id') 
+    @Get(':id')
     async getUser(@Param('id', new ParseIntPipe({errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})) id: number): Promise<User>{
         try {
             return await this.userService.getUser(id);
@@ -28,12 +40,12 @@ export class UserController {
     } 
     
     // HTTP POST request to /users
-    @Post() 
+    @Post()  
     async postUser(@Body() user: UserDto): Promise<User> {
         try {
             return await this.userService.addUser(user);
         }catch (e) {
-            throw new BadRequestException(e.message)
+            throw new BadRequestException(e.message);
         }
     }
 
