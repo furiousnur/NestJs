@@ -1,3 +1,5 @@
+import {IsBoolean, IsDefined} from "class-validator";
+
 export interface Task {
     id: number;
     name: string;
@@ -5,4 +7,10 @@ export interface Task {
     description?: string;
     owner?: string;
     duration?: number;
+}
+
+export class QueryParamDto {
+    @IsDefined()
+    @IsBoolean()
+    filter: boolean; 
 }

@@ -3,13 +3,14 @@ import {
     Body, Controller, Delete,
     Get,
     HttpStatus,
-    Param,
+    Param, ParseBoolPipe,
     ParseIntPipe,
-    Post
+    Post, Query, Res
 } from '@nestjs/common'; 
 import {TaskService} from "./task.service";
 import {TaskDto} from "./dto/task.dto";
-import {Task} from "./interface/task"; 
+import {QueryParamDto, Task} from "./interface/task";
+import {Response} from "express";
 
 @Controller('tasks') // Base path for all routes in the controller
 export class TaskController {
@@ -23,6 +24,12 @@ export class TaskController {
         }catch (e) {
             throw new BadRequestException(e.message);
         }
+    }
+
+    @Get('/filter/data')
+    async filterTaskById(@Query('filter') filter: ParseBoolPipe, @Res() res:Response){
+        const data = await this.taskService.filterTaskById(filter);
+        return res.status(HttpStatus.OK).json(data);
     }
 
     // HTTP GET request to /tasks/:id

@@ -34,4 +34,11 @@ export class TaskStoreService {
         this.tasks.splice(index, 1);
         return Promise.resolve(this.tasks);
     }
+    
+    public async filterTaskById(filter): Promise<Task[]> {
+        if (!filter) {
+            return Promise.resolve(this.tasks);
+        }
+        return Promise.resolve(this.tasks.filter((i:Task) => i.duration > 0));
+    }
 }
