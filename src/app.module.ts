@@ -6,6 +6,7 @@ import {TaskModule} from "./task-module/task.module";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {User} from "./typeorm/entities/User"; 
 import { UsersModule } from './users/users.module';
+import {Profile} from "./typeorm/entities/Profile";
 
 @Module({
   imports: [UserModule, TaskModule, TypeOrmModule.forRoot({
@@ -15,7 +16,7 @@ import { UsersModule } from './users/users.module';
     username:'root',
     password:'',
     database:'basic_nest',
-    entities:[User],
+    entities:[User, Profile],
     synchronize:true
   }), UsersModule],
   controllers: [AppController],

@@ -10,7 +10,7 @@ export class UsersService {
     constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
     
     public async getUsers(): Promise<User[]>{
-        const users = this.userRepository.find();
+        const users = this.userRepository.find({relations: ['profile']});
         if (!users) {
             throw new NotFoundException('No users found');
         }
@@ -32,9 +32,12 @@ export class UsersService {
             throw new BadRequestException(e.message);
         }
     }
-
-    public async findUser(id: number): Promise<User> { 
-        const user = await this.userRepository.findOne({ where: { id } });
+    
+    public async findUser(id: number): Promise<User> {
+        const user = await this.userRepository.findOne({
+            where: { id },
+            relations: ['profile']
+        });
         if (!user) {
             throw new NotFoundException('User not found');
         }
