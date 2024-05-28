@@ -16,7 +16,7 @@ import {AuthGuard} from "./guard/auth.guard";
 import {LoggingInterceptor} from "./interceptor/logging.interceptor";
 
 @UseInterceptors(LoggingInterceptor) // Apply LoggingInterceptor to all routes in the controller for logging before and after each request
-@Controller('users') // Base path for all routes in the controller
+@Controller('user') // Base path for all routes in the controller
 @UseGuards(AuthGuard) // Apply AuthGuard to all routes in the controller for authentication
 export class UserController {
     constructor(private readonly userService: UserService) {}
