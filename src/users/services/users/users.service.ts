@@ -40,6 +40,22 @@ export class UsersService {
         }
         return Promise.resolve(user);
     }
+    
+    public async updateUser(id: number, userDetails: CreateUsersParams): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) {
+            throw new NotFoundException('User not found. Check the ID and try again');
+        }
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(userDetails.password, salt);
+        const updatedUser = await this.userRepository.save({
+            ...user,
+            ...userDetails,
+            password: hashedPassword,
+            updatedAt: new Date(),
+        });
+        return Promise.resolve(updatedUser);
+    }
 
     public async deleteUser(id: number): Promise<User[]> {
         const user = await this.userRepository.findOne({ where: { id } });

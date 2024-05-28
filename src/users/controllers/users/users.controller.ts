@@ -7,7 +7,7 @@ import {
     HttpStatus,
     Param,
     ParseIntPipe,
-    Post,
+    Post, Put,
     Res
 } from '@nestjs/common'; 
 import {User} from "../../../typeorm/entities/User"; 
@@ -49,6 +49,19 @@ export class UsersController {
     async findUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
         try {
             return await this.usersService.findUser(id);
+        } catch (e) {
+            throw new BadRequestException(e.message);
+        }
+    }
+    
+    @Put(':id')
+    async updateUser(@Param('id', ParseIntPipe) id: number,@Body() createUserDto:CreateUserDto,@Res() res: Response){
+        try {
+            const data = await this.usersService.updateUser(id, createUserDto);
+            return res.status(HttpStatus.OK).json({
+                message: 'User updated successfully',
+                data,
+            });
         } catch (e) {
             throw new BadRequestException(e.message);
         }
