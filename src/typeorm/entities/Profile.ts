@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {User} from "./User";
 
 @Entity('profiles')
 export class Profile {
@@ -22,4 +23,7 @@ export class Profile {
     
     @Column({nullable: true})
     updatedAt: Date;
+
+    @OneToOne(() => User, user => user.profile)
+    user: User;
 }
