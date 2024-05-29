@@ -9,3 +9,8 @@ export type UserProfileParams = {
     age: number;
     dob: string; 
 }
+
+export type PostParams = {
+    title: string;
+    description: string; 
+}

@@ -7,7 +7,7 @@ import {ProfileService} from "../../services/profile/profile.service";
 export class UserProfileController { 
     constructor(private profilesService: ProfileService) {}
 
-    @Post('user/:id')
+    @Post('/user/:id')
     async createUserProfile(@Param('id', ParseIntPipe) id: number, @Body() userProfileDto:UserProfileDto,@Res() res: Response){
         try {
             const data = await this.profilesService.createUserProfile(id, userProfileDto);

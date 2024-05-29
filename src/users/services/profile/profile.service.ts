@@ -7,7 +7,10 @@ import {User} from "../../../typeorm/entities/User";
 
 @Injectable()
 export class ProfileService {
-    constructor(@InjectRepository(Profile) private profileRepository: Repository<Profile>, @InjectRepository(User)private userRepository: Repository<User>) {}
+    constructor(
+        @InjectRepository(Profile) private profileRepository: Repository<Profile>, 
+        @InjectRepository(User)private userRepository: Repository<User>
+    ) {}
     
     public async createUserProfile(id: number, profileDetails: UserProfileParams):Promise<Profile>{
         try {
