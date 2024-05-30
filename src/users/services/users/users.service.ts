@@ -9,15 +9,15 @@ import * as bcrypt from 'bcrypt';
 export class UsersService { 
     constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
     
-    public async getUsers(): Promise<User[]>{
-        const users = this.userRepository.find({relations: ['profile']});
+    public async getUsers(){
+        const users = this.userRepository.find({relations: ['profile','posts']});
         if (!users) {
             throw new NotFoundException('No users found');
         }
-        return Promise.resolve(users);
-    }
+        return users;
+    } 
     
-    public async createUser(userDetails: CreateUsersParams):Promise<User>{
+    public async createUser(userDetails: CreateUsersParams){
         try {
             const salt = await bcrypt.genSalt();
             const hashedPassword = await bcrypt.hash(userDetails.password, salt);
@@ -26,8 +26,7 @@ export class UsersService {
                 password: hashedPassword, 
                 createdAt: new Date(),
             });
-            const user = this.userRepository.save(newUser);
-            return Promise.resolve(user);
+            return this.userRepository.save(newUser); 
         } catch (e) {
             throw new BadRequestException(e.message);
         }
@@ -44,23 +43,22 @@ export class UsersService {
         return Promise.resolve(user);
     }
     
-    public async updateUser(id: number, userDetails: CreateUsersParams): Promise<User> {
+    public async updateUser(id: number, userDetails: CreateUsersParams) {
         const user = await this.userRepository.findOne({ where: { id } });
         if (!user) {
             throw new NotFoundException('User not found. Check the ID and try again');
         }
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(userDetails.password, salt);
-        const updatedUser = await this.userRepository.save({
+        return await this.userRepository.save({
             ...user,
             ...userDetails,
             password: hashedPassword,
             updatedAt: new Date(),
-        });
-        return Promise.resolve(updatedUser);
+        }); 
     }
 
-    public async deleteUser(id: number): Promise<User[]> {
+    public async deleteUser(id: number){
         const user = await this.userRepository.findOne({ where: { id } });
         if (!user) {
             throw new NotFoundException('User not found. Check the ID and try again');
@@ -68,5 +66,4 @@ export class UsersService {
         await this.userRepository.remove(user);
         return this.getUsers();
     }
-
 }

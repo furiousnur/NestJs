@@ -8,11 +8,11 @@ import {User} from "../../../typeorm/entities/User";
 @Injectable()
 export class PostService {
     constructor(
-        @InjectRepository(Post)private postRepository: Repository<Post>,
-        @InjectRepository(User)private userRepository: Repository<User>,
+        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(Post) private postRepository: Repository<Post>
     ) {}
 
-    public async createUserPost(id: number, postDetails: PostParams):Promise<Post>{
+    public async createUserPost(id: number, postDetails: PostParams){
         try {
             const user = await this.userRepository.findOne({ where: { id } });
             if (!user) {
@@ -20,11 +20,10 @@ export class PostService {
             }
             const newPost = this.postRepository.create({
                 ...postDetails,
-                userId: id,
+                user,
                 createdAt: new Date(),
             });
-            const profile = await this.postRepository.save(newPost);
-            return Promise.resolve(profile);
+            return await this.postRepository.save(newPost); 
         } catch (e) {
             throw new BadRequestException(e.message);
         }

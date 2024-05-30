@@ -12,7 +12,7 @@ export class ProfileService {
         @InjectRepository(User)private userRepository: Repository<User>
     ) {}
     
-    public async createUserProfile(id: number, profileDetails: UserProfileParams):Promise<Profile>{
+    public async createUserProfile(id: number, profileDetails: UserProfileParams){
         try {
             const user = await this.userRepository.findOne({ where: { id } });
             if (!user) {
@@ -28,7 +28,7 @@ export class ProfileService {
             user.updatedAt = new Date();
             await this.userRepository.save(user); 
             
-            return Promise.resolve(profile);
+            return profile;
         } catch (e) {
             throw new BadRequestException(e.message);
         }
